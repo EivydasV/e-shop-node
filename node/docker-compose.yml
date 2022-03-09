@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  node-app:
+    build: .
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    links:
+      - mongo-db
+      - redis
+    ports:
+      - 5000:5000
+    env_file:
+      - ./.env
+    depends_on:
+      - mongo-db
+      - redis
+  mongo-db:
+    image: mongo:5
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      - MONGODB_USER=eivydas
+      - MONGODB_PASS=eivydas
+    volumes:
+      - mongo-db:/data/db
+  redis:
+    image: redis:6
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-db:/data/redis
+volumes:
+  mongo-db:
+  redis-db:
