@@ -1,5 +1,7 @@
 import z, { nativeEnum, object, string } from 'zod'
-import UserModel, { Roles } from '../models/user.model'
+import { Roles } from '../models/user.model'
+import { UserModel } from '../models'
+
 import validator from 'validator'
 
 const firstName = string({

@@ -1,13 +1,13 @@
 import createError from 'http-errors'
 import { RequestHandler } from 'express'
 import { LoginUserInput } from '../validation/user.validation'
-import UserModel from '../models/user.model'
 import { signJWT } from '../utils/jwt'
 import redis from '../utils/redis'
 import moment from 'moment'
 import _ from 'lodash'
 import redisGetObject from '../utils/redisGetObject'
 import { RedisUser } from '../types/redisTypes'
+import { UserModel } from '../models'
 
 export const me: RequestHandler = async (req, res, next) => {
   return res.status(200).json({ user: res.locals.user })
@@ -23,7 +23,7 @@ export const login: RequestHandler<{}, {}, LoginUserInput> = async (
   const user = await UserModel.findOne({ email }).select('+password')
 
   if (!user || !(await user.comparePassword(password)))
-    return next(new createError.Unauthorized())
+    return next(new createError.Unauthorized('Wrong password or email?'))
 
   const accessToken = signJWT(
     { id: user._id, agent: _.pick(req.useragent, 'os', 'platform', 'source') },

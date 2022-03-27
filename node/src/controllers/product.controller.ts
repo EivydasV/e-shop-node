@@ -3,7 +3,7 @@ import sharp from 'sharp'
 import { CreateProductInput } from '../validation/product.validation'
 import path from 'path'
 import { nanoid } from 'nanoid'
-import ProductModel from '../models/product.model'
+import { ProductModel } from '../models'
 
 export const createProductHandler: RequestHandler<
   {},

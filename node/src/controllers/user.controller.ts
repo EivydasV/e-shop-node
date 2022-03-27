@@ -7,7 +7,7 @@ import {
 } from './../validation/user.validation'
 import createError from 'http-errors'
 import { RequestHandler } from 'express'
-import UserModel, { Roles } from '../models/user.model'
+import { Roles } from '../models/user.model'
 import {
   CreateUserInput,
   ForgotPasswordUserInput,
@@ -22,6 +22,7 @@ import sendEmail from '../utils/mailer'
 import redis from '../utils/redis'
 import redisGetObject from '../utils/redisGetObject'
 import { RedisUser } from '../types/redisTypes'
+import { UserModel } from '../models'
 
 export const createUserHandler: RequestHandler<
   {},

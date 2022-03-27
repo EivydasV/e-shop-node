@@ -63,6 +63,3 @@ export class Product {
   @Prop({ required: true, ref: () => User })
   createdBy!: Ref<User>
 }
-
-const ProductModel = getModelForClass(Product)
-export default ProductModel

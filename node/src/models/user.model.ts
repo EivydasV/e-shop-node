@@ -1,3 +1,4 @@
+import { Product } from './product.model'
 import {
   getModelForClass,
   ModelOptions,
@@ -57,6 +58,9 @@ export class User extends PaginatedModel {
   @Prop({ type: [String], enum: Roles, required: true, default: Roles.USER })
   roles!: Roles[]
 
+  @Prop({ ref: () => Product })
+  cart?: Ref<Product>
+
   @Prop({
     required: true,
     maxlength: 200,
@@ -80,6 +84,3 @@ export class User extends PaginatedModel {
     return await argon2.verify(this.password, candidatePassword)
   }
 }
-
-const UserModel = getModelForClass(User)
-export default UserModel

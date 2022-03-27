@@ -1,7 +1,7 @@
 import z, { nativeEnum, number, object, string } from 'zod'
-import UserModel, { OS } from '../models/product.model'
+import { OS } from '../models/product.model'
 import validator from 'validator'
-import ProductModel from '../models/product.model'
+import { ProductModel, UserModel } from '../models'
 
 const title = string()
   .max(50, { message: 'First Name is too long' })
