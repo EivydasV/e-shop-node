@@ -1,4 +1,4 @@
-import z, { nativeEnum, number, object, string } from 'zod'
+import z, { nativeEnum, number, object, string, any } from 'zod'
 import { OS } from '../models/product.model'
 import validator from 'validator'
 import { ProductModel, UserModel } from '../models'
@@ -22,4 +22,21 @@ export const CreateProductValidation = object({
   }),
 })
 
+export const getAllProductValidation = object({
+  query: object({
+    perPage: any(),
+    page: any(),
+  }),
+})
+export const getProductByIdValidation = object({
+  query: object({
+    id: string(),
+  }),
+})
 export type CreateProductInput = z.infer<typeof CreateProductValidation>['body']
+export type GetProductByIdInput = z.infer<
+  typeof getProductByIdValidation
+>['query']
+export type GetAllProductInput = z.infer<
+  typeof getAllProductValidation
+>['query']

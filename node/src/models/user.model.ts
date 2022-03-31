@@ -9,18 +9,7 @@ import {
 import validator from 'validator'
 import argon2 from 'argon2'
 import PaginatedModel from '../helpers/paginatedModel'
-@ModelOptions({
-  schemaOptions: {
-    timestamps: true,
-  },
-})
-class Recommendations {
-  @Prop({ ref: () => User })
-  writtenBy!: Ref<User>
 
-  @Prop({ required: true })
-  message!: string
-}
 export enum Roles {
   USER = 'user',
   ADMIN = 'admin',

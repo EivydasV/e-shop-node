@@ -1,6 +1,10 @@
 import express, { RequestHandler } from 'express'
 import sharp from 'sharp'
-import { CreateProductInput } from '../validation/product.validation'
+import {
+  CreateProductInput,
+  GetAllProductInput,
+  GetProductByIdInput,
+} from '../validation/product.validation'
 import path from 'path'
 import { nanoid } from 'nanoid'
 import { ProductModel } from '../models'
@@ -34,4 +38,38 @@ export const createProductHandler: RequestHandler<
   //     )
   // })
   return res.status(201).json({ product: newProduct })
+}
+
+export const getAllProductHandler: RequestHandler<
+  {},
+  {},
+  {},
+  GetAllProductInput
+> = async (req, res, next) => {
+  const { page, perPage } = req.query
+  console.log(req.query)
+
+  const MAX_PER_PAGE = 30
+
+  const products = await ProductModel.paginate(
+    {},
+    {
+      page,
+      limit: perPage > MAX_PER_PAGE ? MAX_PER_PAGE : perPage,
+      lean: true,
+    }
+  )
+  return res.status(200).json({ products })
+}
+
+export const getProductByIdHandler: RequestHandler<
+  {},
+  {},
+  {},
+  GetProductByIdInput
+> = async (req, res, next) => {
+  const { id } = req.query
+  const product = await ProductModel.findById(id).lean().explain()
+
+  return res.status(201).json({ product })
 }

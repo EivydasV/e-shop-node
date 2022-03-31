@@ -42,13 +42,14 @@ const handleAuthenticationError = () => {
   return new createError.Unauthorized('unauthenticated')
 }
 const handleZodError = (err: ZodError) => {
-  return createError(
-    422,
-    err.flatten((i) => ({
-      errorCode: i.code,
-      message: i.message,
-    })).fieldErrors
-  )
+  return createError(422, {
+    validationErrors: err
+      .flatten((i) => ({
+        path: i.path[1],
+        message: i.message,
+      }))
+      .fieldErrors.body.reduce((obj, cur) => ({ ...obj, [cur.path]: cur }), {}),
+  })
 }
 export default (err: any, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof mongoose.Error.CastError) err = handleCastErrorDB()

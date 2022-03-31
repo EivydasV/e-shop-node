@@ -7,12 +7,19 @@ import {
 } from '@typegoose/typegoose'
 import slugify from 'slugify'
 import validator from 'validator'
+import PaginatedModel from '../helpers/paginatedModel'
 import { User } from './user.model'
 
 export enum OS {
   windows = 'windows',
   mac = 'mac',
   linux = 'linux',
+}
+export enum Categories {
+  ADVENTURE = 'adventure',
+  ACTION = 'action',
+  PUZZLE = 'puzzle',
+  STRATEGY = 'strategy',
 }
 @Pre<Product>('validate', function (next) {
   this.slug = slugify(`${this.title}`)
@@ -27,7 +34,7 @@ export enum OS {
     timestamps: true,
   },
 })
-export class Product {
+export class Product extends PaginatedModel {
   @Prop({
     trim: true,
     required: true,
@@ -59,6 +66,9 @@ export class Product {
 
   @Prop({ type: [String], enum: OS, required: true })
   os!: OS[]
+
+  @Prop({ type: [String], enum: Categories, required: true })
+  categories!: Categories[]
 
   @Prop({ required: true, ref: () => User })
   createdBy!: Ref<User>
