@@ -15,28 +15,29 @@ export const createProductHandler: RequestHandler<
   CreateProductInput
 > = async (req, res, next) => {
   const { description, price, os, title } = req.body
+  console.log(req.files)
+
+  let images: string[] = []
+  // @ts-ignore
+  await req.files?.map(async (file) => {
+    const fileName = `${nanoid()}.jpeg`
+    images.push(fileName)
+    await sharp(file.buffer)
+      .resize(600, 600, { fit: 'cover' })
+      .toFormat('jpeg')
+      .jpeg()
+      .toFile(path.join(__dirname, '..', 'public', fileName))
+  })
 
   const newProduct = await ProductModel.create({
     description,
     price,
     os,
     title,
+    images,
     createdBy: res.locals.user._id,
   })
-  //@ts-ignore
-  // await req.files?.map(async (file) => {
-  //   await sharp(file.buffer)
-  //     .resize(300, 300)
-  //     .toFormat('jpeg')
-  //     .toFile(
-  //       path.join(
-  //         __dirname,
-  //         '..',
-  //         'public',
-  //         `${nanoid()}.${file.mimetype.split('/')[1]}`
-  //       )
-  //     )
-  // })
+
   return res.status(201).json({ product: newProduct })
 }
 

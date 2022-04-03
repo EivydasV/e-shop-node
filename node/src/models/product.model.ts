@@ -22,7 +22,7 @@ export enum Categories {
   STRATEGY = 'strategy',
 }
 @Pre<Product>('validate', function (next) {
-  this.slug = slugify(`${this.title}`)
+  this.slug = slugify(this.title)
   // console.log(this.slug)
 
   next()
@@ -61,7 +61,7 @@ export class Product extends PaginatedModel {
   })
   slug!: string
 
-  @Prop({ required: true, type: [String] })
+  @Prop({ required: true, type: [String], maxlength: 6, minlength: 1 })
   images!: string[]
 
   @Prop({ type: [String], enum: OS, required: true })

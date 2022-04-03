@@ -14,6 +14,7 @@ const upload = multer({
   },
   limits: {
     files: 6,
+    fileSize: 5000000, //5mb
   },
 })
 export default upload

@@ -5,8 +5,7 @@ import { signJWT } from '../utils/jwt'
 import redis from '../utils/redis'
 import moment from 'moment'
 import _ from 'lodash'
-import redisGetObject from '../utils/redisGetObject'
-import { RedisUser } from '../types/redisTypes'
+
 import { UserModel } from '../models'
 
 export const me: RequestHandler = async (req, res, next) => {

@@ -1,4 +1,11 @@
-import z, { nativeEnum, number, object, string, any } from 'zod'
+import z, {
+  nativeEnum,
+  number,
+  object,
+  string,
+  any,
+  instanceof as instance,
+} from 'zod'
 import { OS } from '../models/product.model'
 import validator from 'validator'
 import { ProductModel, UserModel } from '../models'
@@ -19,6 +26,7 @@ export const CreateProductValidation = object({
     price,
     description,
     os,
+    images: any().array().min(1).max(6),
   }),
 })
 

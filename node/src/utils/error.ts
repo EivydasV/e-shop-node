@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-// import multer from 'multer'
+import multer from 'multer'
 import { Response, Request, NextFunction, ErrorRequestHandler } from 'express'
 import createError, { HttpError } from 'http-errors'
 import z, { ZodError } from 'zod'
@@ -34,10 +34,9 @@ const handleJWTError = (res: Response) => {
 const handleCSRFError = (error: { message: string }) =>
   new createError.Forbidden('Invalid CSRF token')
 
-// const handleMulterError = (error: Error) => {
-//   console.log(error)
-//   return new AppError(error.message, 400)
-// }
+const handleMulterError = (error: Error) => {
+  return new createError.BadRequest(error.message)
+}
 const handleAuthenticationError = () => {
   return new createError.Unauthorized('unauthenticated')
 }
@@ -61,7 +60,7 @@ export default (err: any, req: Request, res: Response, next: NextFunction) => {
     err = handleJWTError(res)
   if (err.name === 'AuthenticationError') err = handleAuthenticationError
   if (err.name === 'EBADCSRFTOKEN') err = handleCSRFError(err)
-  // if (err instanceof multer.MulterError) error = handleMulterError(error)
+  if (err instanceof multer.MulterError) err = handleMulterError(err)
   // if (err.name === "Error") error = handleRedisError(error);
 
   if (!(err instanceof createError.HttpError)) {
