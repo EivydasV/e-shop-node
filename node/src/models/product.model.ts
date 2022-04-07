@@ -45,6 +45,7 @@ export class Product extends PaginatedModel {
 
   @Prop({
     required: true,
+    min: 1,
     get: (val: number) => (val / 100).toFixed(2),
   })
   price!: number

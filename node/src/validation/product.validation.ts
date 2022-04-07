@@ -6,7 +6,7 @@ import z, {
   any,
   instanceof as instance,
 } from 'zod'
-import { OS } from '../models/product.model'
+import { Categories, OS } from '../models/product.model'
 import validator from 'validator'
 import { ProductModel, UserModel } from '../models'
 
@@ -16,9 +16,10 @@ const title = string()
     async (title) => !(await ProductModel.findOne({ title }).select('').lean()),
     { message: 'Product with that title already exists' }
   )
-const price = number()
+const price = number().gte(1, { message: 'Price must be greater than 1' })
 const description = string().max(400, { message: 'description is too long' })
 const os = nativeEnum(OS).array()
+const categories = nativeEnum(Categories).array()
 
 export const CreateProductValidation = object({
   body: object({
@@ -26,6 +27,15 @@ export const CreateProductValidation = object({
     price,
     description,
     os,
+    categories,
+  }),
+})
+export const UploadImageValidation = object({
+  body: object({
+    images: any().array().nonempty(),
+  }),
+  params: object({
+    id: string(),
   }),
 })
 
@@ -41,6 +51,7 @@ export const getProductByIdValidation = object({
   }),
 })
 export type CreateProductInput = z.infer<typeof CreateProductValidation>['body']
+export type UploadImageInput = z.infer<typeof UploadImageValidation>
 export type GetProductByIdInput = z.infer<
   typeof getProductByIdValidation
 >['query']

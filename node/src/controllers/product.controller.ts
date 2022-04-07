@@ -1,9 +1,11 @@
+import { UserModel } from './../models/index'
 import express, { RequestHandler } from 'express'
 import sharp from 'sharp'
 import {
   CreateProductInput,
   GetAllProductInput,
   GetProductByIdInput,
+  UploadImageInput,
 } from '../validation/product.validation'
 import path from 'path'
 import { nanoid } from 'nanoid'
@@ -15,32 +17,44 @@ export const createProductHandler: RequestHandler<
 > = async (req, res, next) => {
   const { description, price, os, title } = req.body
 
-  //@ts-ignore
-  console.log(req.body)
-  console.log(req.files)
-
-  let images: string[] = []
-  // @ts-ignore
-  await req.files?.map(async (file) => {
-    const fileName = `${nanoid()}.jpeg`
-    images.push(fileName)
-    await sharp(file.buffer)
-      .resize(600, 600, { fit: 'cover' })
-      .toFormat('jpeg')
-      .jpeg()
-      .toFile(path.join(__dirname, '..', 'public', fileName))
+  const newProduct = await ProductModel.create({
+    description,
+    price,
+    os,
+    title,
+    createdBy: res.locals.user._id,
   })
 
-  // const newProduct = await ProductModel.create({
-  //   description,
-  //   price,
-  //   os,
-  //   title,
-  //   images,
-  //   createdBy: res.locals.user._id,
+  return res.status(201).json({ product: newProduct })
+}
+
+export const uploadImageHandler: RequestHandler<
+  UploadImageInput['params'],
+  {},
+  UploadImageInput['body']
+> = async (req, res, next) => {
+  const { id } = req.params
+
+  const user = await ProductModel.findOne({
+    _id: id,
+    createdBy: res.locals.user._id,
+  })
+  console.log(req.files)
+  console.log(user)
+
+  // let images: string[] = []
+  // // @ts-ignore
+  // await req.files?.map(async (file) => {
+  //   const fileName = `${nanoid()}.jpeg`
+  //   images.push(fileName)
+  //   await sharp(file.buffer)
+  //     .resize(600, 600, { fit: 'cover' })
+  //     .toFormat('jpeg')
+  //     .jpeg()
+  //     .toFile(path.join(__dirname, '..', 'public', fileName))
   // })
 
-  return res.status(201).json({ product: 's' })
+  return res.status(200).json({ product: 's' })
 }
 
 export const getAllProductHandler: RequestHandler<

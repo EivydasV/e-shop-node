@@ -2,17 +2,18 @@ import {
   CreateProductValidation,
   getAllProductValidation,
   getProductByIdValidation,
+  UploadImageValidation,
 } from './../validation/product.validation'
 import express from 'express'
 import {
   createProductHandler,
   getAllProductHandler,
   getProductByIdHandler,
+  uploadImageHandler,
 } from '../controllers/product.controller'
 import upload from '../utils/multer'
 import validateResource from '../middlewares/validateResource'
 import requireUser from '../middlewares/requireUser'
-import parseBody from '../middlewares/parseBody'
 
 const router = express.Router()
 
@@ -25,10 +26,16 @@ router
   .route('/')
   .get(validateResource(getAllProductValidation), getAllProductHandler)
   .post(
-    parseBody,
-    upload.array('images', 6),
-    // validateResource(CreateProductValidation),
+    requireUser,
+    validateResource(CreateProductValidation),
     createProductHandler
   )
+router.post(
+  'upload/images/:id',
+  requireUser,
+  validateResource(UploadImageValidation),
+  upload.array('images', 6),
+  uploadImageHandler
+)
 
 export default router
