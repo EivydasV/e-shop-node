@@ -51,6 +51,8 @@ const handleZodError = (err: ZodError) => {
   })
 }
 export default (err: any, req: Request, res: Response, next: NextFunction) => {
+  // console.log(err)
+
   if (err instanceof mongoose.Error.CastError) err = handleCastErrorDB()
   if (err instanceof ZodError) err = handleZodError(err)
   if (err.code === 11000) err = handleDuplicateError()

@@ -26,7 +26,6 @@ export const CreateProductValidation = object({
     price,
     description,
     os,
-    images: any().array().min(1).max(6),
   }),
 })
 

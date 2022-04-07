@@ -8,13 +8,15 @@ import {
 import path from 'path'
 import { nanoid } from 'nanoid'
 import { ProductModel } from '../models'
-
 export const createProductHandler: RequestHandler<
   {},
   {},
   CreateProductInput
 > = async (req, res, next) => {
   const { description, price, os, title } = req.body
+
+  //@ts-ignore
+  console.log(req.body)
   console.log(req.files)
 
   let images: string[] = []
@@ -29,16 +31,16 @@ export const createProductHandler: RequestHandler<
       .toFile(path.join(__dirname, '..', 'public', fileName))
   })
 
-  const newProduct = await ProductModel.create({
-    description,
-    price,
-    os,
-    title,
-    images,
-    createdBy: res.locals.user._id,
-  })
+  // const newProduct = await ProductModel.create({
+  //   description,
+  //   price,
+  //   os,
+  //   title,
+  //   images,
+  //   createdBy: res.locals.user._id,
+  // })
 
-  return res.status(201).json({ product: newProduct })
+  return res.status(201).json({ product: 's' })
 }
 
 export const getAllProductHandler: RequestHandler<

@@ -12,6 +12,7 @@ import {
 import upload from '../utils/multer'
 import validateResource from '../middlewares/validateResource'
 import requireUser from '../middlewares/requireUser'
+import parseBody from '../middlewares/parseBody'
 
 const router = express.Router()
 
@@ -24,8 +25,9 @@ router
   .route('/')
   .get(validateResource(getAllProductValidation), getAllProductHandler)
   .post(
-    validateResource(CreateProductValidation),
+    parseBody,
     upload.array('images', 6),
+    // validateResource(CreateProductValidation),
     createProductHandler
   )
 
