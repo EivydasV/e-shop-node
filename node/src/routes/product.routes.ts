@@ -1,7 +1,9 @@
+import { searchByTitleIdHandler } from './../controllers/product.controller'
 import {
   CreateProductValidation,
   getAllProductValidation,
   getProductByIdValidation,
+  searchProductByTitleValidation,
   UploadImageValidation,
 } from './../validation/product.validation'
 import express from 'express'
@@ -18,6 +20,11 @@ import requireUser from '../middlewares/requireUser'
 const router = express.Router()
 
 router.get(
+  '/search',
+  validateResource(searchProductByTitleValidation),
+  searchByTitleIdHandler
+)
+router.get(
   '/:id',
   validateResource(getProductByIdValidation),
   getProductByIdHandler
@@ -31,9 +38,9 @@ router
     createProductHandler
   )
 router.post(
-  'upload/images/:id',
+  '/upload/images',
   requireUser,
-  validateResource(UploadImageValidation),
+  // validateResource(UploadImageValidation),
   upload.array('images', 6),
   uploadImageHandler
 )

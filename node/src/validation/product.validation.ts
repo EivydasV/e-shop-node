@@ -33,16 +33,15 @@ export const CreateProductValidation = object({
 export const UploadImageValidation = object({
   body: object({
     images: any().array().nonempty(),
-  }),
-  params: object({
     id: string(),
   }),
 })
 
 export const getAllProductValidation = object({
   query: object({
-    perPage: any(),
-    page: any(),
+    perPage: any().optional(),
+    page: any().optional(),
+    search: any().optional(),
   }),
 })
 export const getProductByIdValidation = object({
@@ -50,11 +49,19 @@ export const getProductByIdValidation = object({
     id: string(),
   }),
 })
+export const searchProductByTitleValidation = object({
+  query: object({
+    search: any().optional(),
+  }),
+})
 export type CreateProductInput = z.infer<typeof CreateProductValidation>['body']
-export type UploadImageInput = z.infer<typeof UploadImageValidation>
+export type UploadImageInput = z.infer<typeof UploadImageValidation>['body']
 export type GetProductByIdInput = z.infer<
   typeof getProductByIdValidation
 >['query']
 export type GetAllProductInput = z.infer<
   typeof getAllProductValidation
+>['query']
+export type SearchProductInput = z.infer<
+  typeof searchProductByTitleValidation
 >['query']

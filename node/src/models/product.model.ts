@@ -46,7 +46,7 @@ export class Product extends PaginatedModel {
   @Prop({
     required: true,
     min: 1,
-    get: (val: number) => (val / 100).toFixed(2),
+    get: (val: number) => val.toFixed(2),
   })
   price!: number
 
@@ -62,7 +62,13 @@ export class Product extends PaginatedModel {
   })
   slug!: string
 
-  @Prop({ required: true, type: [String], maxlength: 6, minlength: 1 })
+  @Prop({
+    type: [String],
+    validate: {
+      validator: (val: string[]) => (val: string[]) => val.length < 6,
+      message: (props) => `${props.path} exceeds the limit of 6`,
+    },
+  })
   images!: string[]
 
   @Prop({ type: [String], enum: OS, required: true })

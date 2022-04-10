@@ -21,6 +21,7 @@ import deserializeUser from './middlewares/deserializeUser'
 import mongoose from 'mongoose'
 import userAgent from 'express-useragent'
 import moment from 'moment'
+import { queryParser } from 'express-query-parser'
 
 process.on('uncaughtException', (error) => {
   console.log(error)
@@ -39,6 +40,14 @@ app.use(hpp())
 app.use(mongoSanitize())
 app.use(xss())
 app.use(userAgent.express())
+app.use(
+  queryParser({
+    parseNull: true,
+    parseUndefined: true,
+    parseBoolean: true,
+    parseNumber: true,
+  })
+)
 
 app.use('/public', express.static(path.join(__dirname, 'public')))
 
