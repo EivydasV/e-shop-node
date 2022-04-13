@@ -29,9 +29,10 @@ process.on('uncaughtException', (error) => {
   process.exit(1)
 })
 const app = express()
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
+app.use('/public', express.static(path.join(__dirname, 'public')))
 app.use(compression())
 app.use(helmet())
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -48,8 +49,6 @@ app.use(
     parseNumber: true,
   })
 )
-
-app.use('/public', express.static(path.join(__dirname, 'public')))
 
 app.use(deserializeUser)
 

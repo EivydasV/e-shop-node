@@ -17,6 +17,10 @@ const title = string()
     { message: 'Product with that title already exists' }
   )
 const price = number().gte(1, { message: 'Price must be greater than 1' })
+const inStock = number().gte(1, { message: 'InStock must be greater than 1' })
+const trailer = string().regex(
+  /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/
+)
 const description = string().max(400, { message: 'description is too long' })
 const os = nativeEnum(OS).array()
 const categories = nativeEnum(Categories).array()
@@ -27,6 +31,8 @@ export const CreateProductValidation = object({
     price,
     description,
     os,
+    inStock,
+    trailer,
     categories,
   }),
 })
@@ -45,7 +51,12 @@ export const getAllProductValidation = object({
   }),
 })
 export const getProductByIdValidation = object({
-  query: object({
+  params: object({
+    id: string(),
+  }),
+})
+export const deleteProductByIdValidation = object({
+  params: object({
     id: string(),
   }),
 })
@@ -58,7 +69,10 @@ export type CreateProductInput = z.infer<typeof CreateProductValidation>['body']
 export type UploadImageInput = z.infer<typeof UploadImageValidation>['body']
 export type GetProductByIdInput = z.infer<
   typeof getProductByIdValidation
->['query']
+>['params']
+export type DeleteProductByIdInput = z.infer<
+  typeof deleteProductByIdValidation
+>['params']
 export type GetAllProductInput = z.infer<
   typeof getAllProductValidation
 >['query']

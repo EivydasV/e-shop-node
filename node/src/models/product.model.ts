@@ -53,6 +53,15 @@ export class Product extends PaginatedModel {
   @Prop({ trim: true, required: true, maxlength: 400 })
   description!: string
 
+  @Prop({ default: 0 })
+  soldCount!: number
+
+  @Prop({ required: true })
+  inStock!: number
+
+  @Prop({ required: true })
+  trailer!: string
+
   @Prop({
     trim: true,
     required: true,

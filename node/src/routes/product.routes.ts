@@ -1,6 +1,10 @@
-import { searchByTitleIdHandler } from './../controllers/product.controller'
+import {
+  getMyProductHandler,
+  searchByTitleIdHandler,
+} from './../controllers/product.controller'
 import {
   CreateProductValidation,
+  deleteProductByIdValidation,
   getAllProductValidation,
   getProductByIdValidation,
   searchProductByTitleValidation,
@@ -12,6 +16,8 @@ import {
   getAllProductHandler,
   getProductByIdHandler,
   uploadImageHandler,
+  getCarouselImagesHandler,
+  deleteProductHandler,
 } from '../controllers/product.controller'
 import upload from '../utils/multer'
 import validateResource from '../middlewares/validateResource'
@@ -23,6 +29,13 @@ router.get(
   '/search',
   validateResource(searchProductByTitleValidation),
   searchByTitleIdHandler
+)
+router.get('/carousel-images', getCarouselImagesHandler)
+router.get('/my-products', getMyProductHandler)
+router.delete(
+  '/:id',
+  validateResource(deleteProductByIdValidation),
+  deleteProductHandler
 )
 router.get(
   '/:id',
