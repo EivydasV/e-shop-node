@@ -90,14 +90,12 @@ export const getAllProductHandler: RequestHandler<
 }
 
 export const getProductByIdHandler: RequestHandler<
-  {},
-  {},
-  {},
   GetProductByIdInput
 > = async (req, res, next) => {
-  const { id } = req.query
+  const { id } = req.params
   const product = await ProductModel.findById(id).lean()
 
+  if (!product) return next(new createHttpError.NotFound('Product not found'))
   return res.status(200).json({ product })
 }
 export const getMyProductHandler: RequestHandler = async (req, res, next) => {
