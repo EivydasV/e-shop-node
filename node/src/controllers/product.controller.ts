@@ -1,3 +1,4 @@
+import { getCartHandler } from './user.controller'
 import { UserModel } from './../models/index'
 import express, { RequestHandler } from 'express'
 import sharp from 'sharp'
@@ -19,7 +20,8 @@ export const createProductHandler: RequestHandler<
   {},
   CreateProductInput
 > = async (req, res, next) => {
-  const { description, price, os, title, inStock, trailer } = req.body
+  const { description, price, os, title, inStock, trailer, categories } =
+    req.body
 
   const newProduct = await ProductModel.create({
     description,
@@ -28,6 +30,7 @@ export const createProductHandler: RequestHandler<
     title,
     inStock,
     trailer,
+    categories,
     createdBy: res.locals.user._id,
   })
   console.log(newProduct)
@@ -93,15 +96,16 @@ export const getProductByIdHandler: RequestHandler<
   GetProductByIdInput
 > = async (req, res, next) => {
   const { id } = req.params
-  const product = await ProductModel.findById(id).lean()
+  const product = await ProductModel.findById(id).populate('createdBy').lean()
 
   if (!product) return next(new createHttpError.NotFound('Product not found'))
   return res.status(200).json({ product })
 }
+
 export const getMyProductHandler: RequestHandler = async (req, res, next) => {
   const products = await ProductModel.find({
     createdBy: res.locals.user._id,
-  }).lean()
+  }).sort({ createdAt: -1 })
 
   return res.status(200).json({ products })
 }
@@ -149,7 +153,34 @@ export const getCarouselImagesHandler: RequestHandler = async (
   next
 ) => {
   const product = await ProductModel.find({}).limit(5).lean()
-  // console.log(product)
 
-  return res.status(201).json({ product })
+  return res.status(200).json({ product })
+}
+export const getBestSellersHandler: RequestHandler = async (req, res, next) => {
+  const products = await ProductModel.find({})
+    .sort({ soldCount: 1 })
+    .limit(6)
+    .lean()
+
+  return res.status(200).json({ products })
+}
+export const buyProductHandler: RequestHandler = async (req, res, next) => {
+  const user = await UserModel.findById(res.locals.user._id).select(
+    'cart boughtGames'
+  )
+  if (!user) return next(new createHttpError.NotFound('User not found'))
+  if (!user.cart.length)
+    return next(new createHttpError.BadRequest('Cart is empty'))
+
+  //@ts-ignore
+  user.boughtGames.addToSet(user.cart)
+
+  const product = await ProductModel.updateMany(
+    { _id: { $in: user.cart } },
+    { $inc: { soldCount: 1, inStock: -1 } },
+    { lean: true }
+  )
+  user.cart = []
+  await user.save()
+  return res.status(200).json({ user, product })
 }

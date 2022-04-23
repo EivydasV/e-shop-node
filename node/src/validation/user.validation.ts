@@ -143,9 +143,20 @@ export const getAllUserValidation = object({
     page: string().optional(),
   }),
 })
+export const addToCartUserValidation = object({
+  body: object({
+    id: string(),
+  }),
+})
+export const removeItemCartUserValidation = object({
+  params: object({
+    id: string(),
+  }),
+})
 export const removeRoleUserValidation = addRoleUserValidation
 
 export type GetAllUserInput = z.infer<typeof getAllUserValidation>['query']
+export type AddToCartUserInput = z.infer<typeof addToCartUserValidation>['body']
 export type GetByIdUserInput = z.infer<typeof GetByIdUserValidation>['params']
 export type removeUserInput = z.infer<typeof removeUserValidation>['params']
 export type ResetPasswordUserInput = z.infer<typeof ResetPasswordUserValidation>
@@ -153,6 +164,9 @@ export type CreateUserInput = z.infer<typeof createUserValidation>['body']
 export type LoginUserInput = z.infer<typeof loginUserValidation>['body']
 export type AddRoleUserInput = z.infer<typeof addRoleUserValidation>
 export type RemoveRoleUserInput = z.infer<typeof removeRoleUserValidation>
+export type RemoveItemCartUserInput = z.infer<
+  typeof removeItemCartUserValidation
+>['params']
 export type UpdateEmailUserInput = z.infer<
   typeof updateEmailUserValidation
 >['body']

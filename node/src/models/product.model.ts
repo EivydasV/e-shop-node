@@ -50,7 +50,7 @@ export class Product extends PaginatedModel {
   })
   price!: number
 
-  @Prop({ trim: true, required: true, maxlength: 400 })
+  @Prop({ trim: true, required: true, maxlength: 1000 })
   description!: string
 
   @Prop({ default: 0 })

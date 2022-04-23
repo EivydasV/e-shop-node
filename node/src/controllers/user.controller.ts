@@ -1,5 +1,6 @@
 import {
   AddRoleUserInput,
+  AddToCartUserInput,
   GetAllUserInput,
   removeUserInput,
   UpdateEmailUserInput,
@@ -22,7 +23,7 @@ import sendEmail from '../utils/mailer'
 import redis from '../utils/redis'
 import redisGetObject from '../utils/redisGetObject'
 import { RedisUser } from '../types/redisTypes'
-import { UserModel } from '../models'
+import { ProductModel, UserModel } from '../models'
 
 export const createUserHandler: RequestHandler<
   {},
@@ -209,4 +210,40 @@ export const removeUserHandler: RequestHandler<removeUserInput> = async (
   if (!user) return next(new createError.NotFound('User not found'))
   await redis.del(`user:${user._id}`)
   return res.status(200).json({ message: `User deleted` })
+}
+export const addToCartHandler: RequestHandler<
+  {},
+  {},
+  AddToCartUserInput
+> = async (req, res, next) => {
+  const { id } = req.body
+  const product = await ProductModel.findById(id).select('').lean()
+  if (!product) return next(new createError.NotFound('Product not found'))
+
+  const game = await UserModel.findByIdAndUpdate(
+    res.locals.user._id,
+    {
+      $addToSet: { cart: product._id },
+    },
+    { new: true, runValidators: true }
+  ).lean()
+  console.log(game)
+
+  return res.sendStatus(200)
+}
+export const getCartHandler: RequestHandler = async (req, res, next) => {
+  const user = await UserModel.findById(res.locals.user._id)
+    .populate('cart')
+    .select('cart')
+
+  return res.status(200).json({ cart: user?.cart })
+}
+export const removeItemCartHandler: RequestHandler = async (req, res, next) => {
+  const user = await UserModel.findByIdAndUpdate(res.locals.user._id, {
+    $pull: { cart: req.params.id },
+  })
+    .populate('cart')
+    .select('cart')
+
+  return res.status(200).json({ cart: user?.cart })
 }

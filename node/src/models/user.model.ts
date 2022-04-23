@@ -48,7 +48,10 @@ export class User extends PaginatedModel {
   roles!: Roles[]
 
   @Prop({ ref: () => Product })
-  cart?: Ref<Product>
+  cart!: Ref<Product>[]
+
+  @Prop({ ref: () => Product })
+  boughtGames!: Ref<Product>[]
 
   @Prop({
     required: true,

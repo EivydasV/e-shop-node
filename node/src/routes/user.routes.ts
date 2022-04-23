@@ -1,5 +1,7 @@
 import {
   addRoleHandler,
+  addToCartHandler,
+  getCartHandler,
   removeRoleHandler,
   removeUserHandler,
 } from './../controllers/user.controller'
@@ -13,6 +15,7 @@ import {
   resetPasswordHandler,
   updateEmailHandler,
   updatePasswordHandler,
+  removeItemCartHandler,
 } from '../controllers/user.controller'
 import validateResource from '../middlewares/validateResource'
 import {
@@ -25,6 +28,8 @@ import {
   addRoleUserValidation,
   removeRoleUserValidation,
   removeUserValidation,
+  addToCartUserValidation,
+  removeItemCartUserValidation,
 } from '../validation/user.validation'
 import requireUser from '../middlewares/requireUser'
 import { login, logout, me } from '../controllers/auth.controller'
@@ -65,6 +70,17 @@ router.put(
   '/update-password',
   validateResource(updatePasswordUserValidation),
   updatePasswordHandler
+)
+router.put(
+  '/add-to-cart',
+  validateResource(addToCartUserValidation),
+  addToCartHandler
+)
+router.get('/get-cart', getCartHandler)
+router.delete(
+  '/remove-item-cart/:id',
+  validateResource(removeItemCartUserValidation),
+  removeItemCartHandler
 )
 router.put(
   '/update-email',

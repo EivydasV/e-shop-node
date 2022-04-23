@@ -21,7 +21,7 @@ const inStock = number().gte(1, { message: 'InStock must be greater than 1' })
 const trailer = string().regex(
   /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/
 )
-const description = string().max(400, { message: 'description is too long' })
+const description = string().max(1000, { message: 'description is too long' })
 const os = nativeEnum(OS).array()
 const categories = nativeEnum(Categories).array()
 

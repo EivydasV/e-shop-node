@@ -1,4 +1,5 @@
 import {
+  getBestSellersHandler,
   getMyProductHandler,
   searchByTitleIdHandler,
 } from './../controllers/product.controller'
@@ -18,6 +19,7 @@ import {
   uploadImageHandler,
   getCarouselImagesHandler,
   deleteProductHandler,
+  buyProductHandler,
 } from '../controllers/product.controller'
 import upload from '../utils/multer'
 import validateResource from '../middlewares/validateResource'
@@ -31,12 +33,16 @@ router.get(
   searchByTitleIdHandler
 )
 router.get('/carousel-images', getCarouselImagesHandler)
+router.get('/best-sellers', getBestSellersHandler)
 router.get('/my-products', getMyProductHandler)
 router.delete(
   '/:id',
   validateResource(deleteProductByIdValidation),
   deleteProductHandler
 )
+
+router.post('/buy', buyProductHandler)
+
 router.get(
   '/:id',
   validateResource(getProductByIdValidation),
